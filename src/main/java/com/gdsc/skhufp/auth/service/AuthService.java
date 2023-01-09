@@ -1,17 +1,16 @@
 package com.gdsc.skhufp.auth.service;
 
+import com.gdsc.skhufp.auth.domain.entity.RefreshToken;
 import com.gdsc.skhufp.auth.domain.entity.Role;
 import com.gdsc.skhufp.auth.domain.entity.User;
+import com.gdsc.skhufp.auth.domain.repository.RefreshTokenRepository;
+import com.gdsc.skhufp.auth.domain.repository.UserRepository;
 import com.gdsc.skhufp.auth.dto.TokenDTO;
 import com.gdsc.skhufp.auth.dto.UserDTO;
 import com.gdsc.skhufp.auth.token.JwtTokenProvider;
 import com.gdsc.skhufp.common.exception.auth.*;
-import com.gdsc.skhufp.auth.domain.entity.RefreshToken;
-import com.gdsc.skhufp.auth.domain.repository.RefreshTokenRepository;
-import com.gdsc.skhufp.auth.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -46,9 +44,14 @@ public class AuthService {
 
     @Transactional
     public TokenDTO signIn(UserDTO userRequest) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userRequest.username(), userRequest.password());
+        UserDetails userDetails = userRepository.findByUsername(userRequest.username())
+                .orElseThrow(LoginFailedException::new);
 
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        if (!passwordEncoder.matches(userRequest.password(), userDetails.getPassword())) {
+            throw new LoginFailedException();
+        }
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 
         String accessToken = jwtTokenProvider.createAccessToken(authentication);
         String refreshToken = jwtTokenProvider.createRandomRefreshToken();
