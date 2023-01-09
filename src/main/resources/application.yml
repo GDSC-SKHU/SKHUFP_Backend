@@ -32,7 +32,7 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
         default_batch_fetch_size: ${chunkSize:100}
         jdbc.batch_size: 20
         order_inserts: true
@@ -81,10 +81,10 @@ spring:
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
         default_batch_fetch_size: ${chunkSize:100}
         jdbc.batch_size: 20
         order_inserts: true
@@ -94,7 +94,7 @@ spring:
       on-profile: production
   data:
     redis:
-      host: localhost
+      host: test-redis
       port: 6379
   devtools:
     livereload:
