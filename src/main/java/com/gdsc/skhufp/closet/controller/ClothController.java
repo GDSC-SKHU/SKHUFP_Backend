@@ -4,33 +4,36 @@ import com.gdsc.skhufp.closet.entity.Cloth;
 import com.gdsc.skhufp.closet.service.ClothService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-
+import java.security.Principal;
 @RestController
 @RequiredArgsConstructor
 public class ClothController {
 
     private final ClothService clothService;
     // 생성
-    //id(user)값으로 Cloth 객체를 build
-    @PostMapping("/api/{id}/clothes")
-    public ResponseEntity<ClothDTO> saveByUserId(@PathVariable("id")Long id,@RequestBody ClothDTO request)
+    @PostMapping("/api/clothes")
+    public ResponseEntity<ClothDTO> save(Principal principal,@RequestBody ClothDTO request)
     {
-        ClothDTO response = clothService.saveByUserId(id,request);
+        ClothDTO response =clothService.save(principal,request);
         return ResponseEntity.created(URI.create("/api/clothes/"+response.getId()))
                 .body(response);
     }
     // 전제 조회
-    @GetMapping("api/{id}/clothes")
-    public ResponseEntity<List<ClothDTO>> findAllByUserId(@PathVariable("id") Long id){
+    @GetMapping("api/clothes")
+    public ResponseEntity<List<ClothDTO>> findAllByUserName(Principal principal) {
+        List<ClothDTO> response = clothService.findAllByUserName(principal);
 
-        List<ClothDTO> response = clothService.findAllByUserId(id);
-
-        if(response.isEmpty()){
+        if (response.isEmpty()) {
             return ResponseEntity
                     .noContent()
                     .build();

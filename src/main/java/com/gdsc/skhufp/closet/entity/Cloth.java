@@ -1,5 +1,5 @@
 package com.gdsc.skhufp.closet.entity;
-
+import com.gdsc.skhufp.auth.domain.entity.User;
 import com.gdsc.skhufp.closet.dto.ClothDTO;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
@@ -37,10 +37,7 @@ public class Cloth extends BaseTimeEntity {
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-/*
 
-    @OneToMany(mappedBy = "cloth", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<user> clothes = new ArrayList<>();*/
     public void update(ClothDTO dto) {
         this.comment = dto.getComment();
         this.image_url = dto.getImage_url();

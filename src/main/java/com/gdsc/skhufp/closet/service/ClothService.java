@@ -1,16 +1,18 @@
 package com.gdsc.skhufp.closet.service;
-
+import com.gdsc.skhufp.auth.domain.repository.UserRepository;
 import com.gdsc.skhufp.closet.dto.ClothDTO;
 import com.gdsc.skhufp.closet.entity.Cloth;
-import com.gdsc.skhufp.closet.entity.User;
+import com.gdsc.skhufp.auth.domain.entity.User;
 import com.gdsc.skhufp.closet.repository.ClothRepository;
-import com.gdsc.skhufp.closet.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
@@ -20,25 +22,21 @@ public class ClothService {
     private final ClothRepository clothRepository;
 
     @Transactional
-    //userId 로 user 찾기
-    public ClothDTO saveByUserId(Long userId, ClothDTO dto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 ID로 User 찾을 수 없음"));
-        //없으면 Exception(예외)
+    public ClothDTO save(Principal principal, ClothDTO dto) {
+        String user = principal.getName();
 
-        //dto 받은 걸 기반으로 cloth 생성
         Cloth cloth = Cloth.builder()
                 .name(dto.getName())
                 .image_url(dto.getImage_url())
                 .type(dto.getType())
                 .comment(dto.getComment())
-                .user(user)
+                .user(userRepository.findByUsername(user).get())
                 .build();
 
         return clothRepository.save(cloth).toDTO();
     }
 
-    //모든 cloth 검색
+    /*//모든 cloth 검색
     @Transactional(readOnly = true) // 읽기전용
     public List<ClothDTO> findAll() {
         List<Cloth> clothes = clothRepository.findAll();
@@ -46,14 +44,16 @@ public class ClothService {
         return  clothes.stream()// clothes List에서 스트림을 얻어서
                 .map(Cloth::toDTO)//toDTO method로 cloth를 ClothDTO로 변환
                 .collect(Collectors.toList());// 스트림을 List 형태로 변경
-    }
+    }*/
+
 
     //User 컬럼으로 id 검색
     @Transactional(readOnly = true)
-    public List<ClothDTO> findAllByUserId(Long userId) {
-        //userid로 user 찾기
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 ID로 User 찾을 수 없음"));
+    public List<ClothDTO> findAllByUserName(Principal principal) {
+        String prin = principal.getName();
+        //username로 user 찾기
+        User user = userRepository.findByUsername(prin)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 Name로 User 찾을 수 없음"));
         //획득한 user으로 cloth 찾기
         List<Cloth> clothes = clothRepository.findAllByUser(user);
 
