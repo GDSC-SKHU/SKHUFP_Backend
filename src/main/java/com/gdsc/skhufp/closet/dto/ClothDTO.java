@@ -1,28 +1,22 @@
 package com.gdsc.skhufp.closet.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.gdsc.skhufp.closet.domain.entity.ClothType;
+import com.gdsc.skhufp.closet.domain.entity.Season;
 import lombok.Builder;
 
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
-@Getter
 @Builder
-
-@NoArgsConstructor
-@AllArgsConstructor
-public class ClothDTO {
-    private long id;
-    private String image_url;
-    private int type;
-    private String comment;
-    private String name;
-
-    private LocalDateTime created_date;
-
-    private LocalDateTime modified_date;
-
-}
+public record ClothDTO (
+        Long id,
+        String imageUrl,
+        ClothType type,
+        Set<Season> seasons,
+        String name,
+        String comment,
+        LocalDateTime createdDate,
+        LocalDateTime modifiedDate)
+{ }
