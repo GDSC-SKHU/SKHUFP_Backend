@@ -18,5 +18,5 @@ public record ClothDTO (
         String name,
         String comment,
         LocalDateTime createdDate,
-        LocalDateTime modifiedDate)
-{ }
+        LocalDateTime modifiedDate
+) { }

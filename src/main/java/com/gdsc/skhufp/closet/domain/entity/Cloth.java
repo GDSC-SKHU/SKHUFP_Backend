@@ -8,6 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "cloth")
@@ -21,37 +25,40 @@ public class Cloth extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
     @Column(name = "image_url")
-    private String image_url;
-
+    private String imageUrl;
     @Column(name = "type", nullable = false)
-    private int type;
-
-    @Column(name = "comment")
-    private String comment;
+    private ClothType type;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    @BatchSize(size = 1)
+    private Set<Season> seasons = new HashSet<>();
     @Column(name = "name")
     private String name;
-
+    @Column(name = "comment")
+    private String comment;
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     public void update(ClothDTO dto) {
-        this.comment = dto.getComment();
-        this.image_url = dto.getImage_url();
-        this.type = dto.getType();
-        this.name = dto.getName();
+        this.imageUrl = dto.imageUrl();
+        this.type = dto.type();
+        this.seasons = dto.seasons();
+        this.name = dto.name();
+        this.comment = dto.comment();
     }
+
     public ClothDTO toDTO() {
         return ClothDTO.builder()
                 .id(id)
-                .name(name)
-                .image_url(image_url)
+                .imageUrl(imageUrl)
                 .type(type)
+                .seasons(seasons)
+                .name(name)
                 .comment(comment)
-                .created_date(createdDate)
-                .modified_date(modifiedDate)
+                .createdDate(createdDate)
+                .modifiedDate(modifiedDate)
                 .build();
     }
 }

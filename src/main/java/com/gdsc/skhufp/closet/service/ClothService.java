@@ -1,5 +1,5 @@
 package com.gdsc.skhufp.closet.service;
-import com.gdsc.skhufp.auth.domain.repository.UserRepository;
+import com.gdsc.skhufp.auth.service.CustomUserDetailService;
 import com.gdsc.skhufp.closet.dto.ClothDTO;
 import com.gdsc.skhufp.closet.domain.entity.Cloth;
 import com.gdsc.skhufp.auth.domain.entity.User;
@@ -13,22 +13,24 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ClothService {
-    private final UserRepository userRepository;
+    private final CustomUserDetailService customUserDetailService;
     private final ClothRepository clothRepository;
 
     @Transactional
     public ClothDTO save(Principal principal, ClothDTO dto) {
-        String user = principal.getName();
+        User user = (User) customUserDetailService.loadUserByUsername(principal.getName());
 
         Cloth cloth = Cloth.builder()
-                .name(dto.getName())
-                .image_url(dto.getImage_url())
-                .type(dto.getType())
-                .comment(dto.getComment())
-                .user(userRepository.findByUsername(user).get())
+                .imageUrl(dto.imageUrl())
+                .type(dto.type())
+                .seasons(dto.seasons())
+                .user(user)
+                .name(dto.name())
+                .comment(dto.comment())
                 .build();
 
         return clothRepository.save(cloth).toDTO();
@@ -44,21 +46,17 @@ public class ClothService {
                 .collect(Collectors.toList());// 스트림을 List 형태로 변경
     }*/
 
-
-    //User 컬럼으로 id 검색
+    // User 컬럼으로 id 검색
     @Transactional(readOnly = true)
     public List<ClothDTO> findAllByUserName(Principal principal) {
-        String prin = principal.getName();
         //username로 user 찾기
-        User user = userRepository.findByUsername(prin)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 Name로 User 찾을 수 없음"));
+        User user = (User) customUserDetailService.loadUserByUsername(principal.getName());
         //획득한 user으로 cloth 찾기
         List<Cloth> clothes = clothRepository.findAllByUser(user);
 
-        return
-                clothes.stream()
-                        .map(Cloth::toDTO)
-                        .collect(Collectors.toList());
+        return clothes.stream()
+                .map(Cloth::toDTO)
+                .collect(Collectors.toList());
     }
 
     // cloth 검색
@@ -71,11 +69,11 @@ public class ClothService {
     //cloth 객체 update
     @Transactional
     public ClothDTO updateById(Long id, ClothDTO dto) {
+        //id로 cloth를 찾아 dto로 바꿔서 update 후 리턴
         Cloth cloth = findEntityById(id);
         cloth.update(dto);
 
         return clothRepository.saveAndFlush(cloth).toDTO();
-        //id로 cloth를 찾아 dto로 바꿔서 update 후 리턴
     }
 
     //cloth 객체 delete

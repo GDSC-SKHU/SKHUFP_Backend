@@ -18,7 +18,7 @@ public class ClothController {
     public ResponseEntity<ClothDTO> save(Principal principal,@RequestBody ClothDTO request)
     {
         ClothDTO response =clothService.save(principal,request);
-        return ResponseEntity.created(URI.create("/api/clothes/"+response.getId()))
+        return ResponseEntity.created(URI.create("/api/clothes/"+response.id()))
                 .body(response);
     }
     // 전제 조회
