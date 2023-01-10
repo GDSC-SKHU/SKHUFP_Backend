@@ -1,14 +1,13 @@
-package com.gdsc.skhufp.closet.entity;
+package com.gdsc.skhufp.closet.domain.entity;
+
 import com.gdsc.skhufp.auth.domain.entity.User;
 import com.gdsc.skhufp.closet.dto.ClothDTO;
-import jakarta.persistence.*;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.*;
 import com.gdsc.skhufp.common.entity.BaseTimeEntity;
-
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "cloth")
@@ -23,15 +22,15 @@ public class Cloth extends BaseTimeEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "image_url", nullable = true)
+    @Column(name = "image_url")
     private String image_url;
 
     @Column(name = "type", nullable = false)
     private int type;
 
-    @Column(name = "comment", nullable = true)
+    @Column(name = "comment")
     private String comment;
-    @Column(name = "name", nullable = true)
+    @Column(name = "name")
     private String name;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)

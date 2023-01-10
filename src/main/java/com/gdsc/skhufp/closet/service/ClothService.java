@@ -1,12 +1,10 @@
 package com.gdsc.skhufp.closet.service;
 import com.gdsc.skhufp.auth.domain.repository.UserRepository;
 import com.gdsc.skhufp.closet.dto.ClothDTO;
-import com.gdsc.skhufp.closet.entity.Cloth;
+import com.gdsc.skhufp.closet.domain.entity.Cloth;
 import com.gdsc.skhufp.auth.domain.entity.User;
-import com.gdsc.skhufp.closet.repository.ClothRepository;
+import com.gdsc.skhufp.closet.domain.repository.ClothRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
