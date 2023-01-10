@@ -13,7 +13,6 @@ import com.gdsc.skhufp.common.exception.storage.CouldNotSaveFileInS3;
 import com.gdsc.skhufp.common.exception.storage.ImageFIleNotFoundException;
 import com.gdsc.skhufp.storage.domain.model.ImageFile;
 import com.gdsc.skhufp.storage.domain.repository.ImageFileRepository;
-import com.gdsc.skhufp.storage.dto.ImageFileDTO;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +40,7 @@ public class ImageFileService {
     private String region;
 
     @Transactional
-    public ImageFileDTO save(MultipartFile file) {
+    public ImageFile save(MultipartFile file) {
         String convertedName = createRandomFileName(file.getOriginalFilename());
         String s3Url = uploadToS3(file, "skhufp/" + convertedName);
 
@@ -53,7 +52,7 @@ public class ImageFileService {
 
         imageFileRepository.save(imageFile);
 
-        return imageFile.toDto();
+        return imageFile;
     }
 
     @Transactional

@@ -1,4 +1,4 @@
-package com.gdsc.skhufp.closet.dto;
+package com.gdsc.skhufp.closet.dto.response;
 
 
 import com.gdsc.skhufp.closet.domain.entity.ClothType;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Builder
-public record ClothDTO (
+public record ClothResponse (
         Long id,
         String imageUrl,
         ClothType type,
