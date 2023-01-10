@@ -29,7 +29,11 @@ public enum StatusEnum {
 
     // 404
     USER_NOT_FOUND(NOT_FOUND, "유저를 찾을 수 없음"),
-    REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "Refresh Token DB에 존재하지 않음");
+    REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "Refresh Token DB에 존재하지 않음"),
+    IMAGE_FILE_NOT_FOUND(NOT_FOUND, "Image File DB에 존재하지 않음"),
+
+    // 500
+    COULD_NOT_SAVE_FILE_IN_S3(INTERNAL_SERVER_ERROR, "S3 저장소에 파일을 저장 할 수 없습니다");
 
     private final HttpStatus httpStatus;
     private String detail;

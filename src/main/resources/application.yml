@@ -6,6 +6,18 @@ jwt:
 cors:
   allowed-origins: "*"
 
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}
+    s3:
+      bucket: hyunsoo-bucket
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
 ---
 # 개발 환경
 spring:
