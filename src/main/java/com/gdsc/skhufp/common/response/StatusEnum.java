@@ -9,6 +9,8 @@ import static org.springframework.http.HttpStatus.*;
 public enum StatusEnum {
     // 200
     SUCCESS_RETURN_DATA(OK, "데이터 반환 성공"),
+    SUCCESS_UPDATE_DATA(OK, "데이터 업데이트 성공"),
+    SUCCESS_DELETE_DATA(OK, "데이터 지우기 성공"),
 
     // 201
     SUCCESS_SIGN_IN(CREATED, "로그인 성공(Access token, Refresh token 발급 성공)"),
@@ -24,6 +26,10 @@ public enum StatusEnum {
     USERNAME_ALREADY_EXISTS(BAD_REQUEST, "해당 username을 가진 user가 이미 존재합니다."),
     IMAGE_ALREADY_ON_CLOTH(BAD_REQUEST, "이미 해당 옷에는 이미지가 등록되어 있습니다."),
     NO_IMAGE_ON_CLOTH(BAD_REQUEST, "해당 옷에는 이미지가 등록되어 있지 않습니다."),
+    CLOTH_TYPE_PARAM_NOT_MATCH(BAD_REQUEST, "Request Param을 확인 해주세요(사용 가능한 목록 - tops, bottoms, outerwear, shoes, bags, etc)"),
+    SEASON_PARAM_NOT_MATCH(BAD_REQUEST, "Request Param을 확인 해주세요(사용 가능한 목록 - spring, summer, fall, winter)"),
+    CLOTH_TYPE_BODY_NOT_MATCH(BAD_REQUEST, "Request Body에서 type을 확인 해주세요(사용 가능한 목록 - tops, bottoms, outerwear, shoes, bags, etc)"),
+    SEASON_BODY_NOT_MATCH(BAD_REQUEST, "Request Body에서 season을 확인 해주세요(사용 가능한 목록 - spring, summer, fall, winter)"),
 
     // 401
     INVALID_ACCESS_TOKEN(UNAUTHORIZED, "Access token이 잘못되었습니다."),

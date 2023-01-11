@@ -14,6 +14,7 @@ import org.hibernate.annotations.BatchSize;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "cloth")
@@ -58,8 +59,12 @@ public class Cloth extends BaseTimeEntity {
         return ClothResponse.builder()
                 .id(id)
                 .imageUrl(imageUrl)
-                .type(type)
-                .seasons(seasons)
+                .type(type.name().toLowerCase())
+                .seasons(
+                        seasons.stream()
+                                .map(x -> x.name().toLowerCase())
+                                .collect(Collectors.toList())
+                )
                 .name(name)
                 .comment(comment)
                 .createdDate(createdDate)
