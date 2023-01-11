@@ -1,61 +1,94 @@
 package com.gdsc.skhufp.closet.controller;
-import com.gdsc.skhufp.closet.dto.ClothDTO;
+
+import com.gdsc.skhufp.closet.domain.entity.ClothType;
+import com.gdsc.skhufp.closet.domain.entity.Season;
+import com.gdsc.skhufp.closet.dto.request.ClothRequest;
+import com.gdsc.skhufp.closet.dto.response.ClothResponse;
 import com.gdsc.skhufp.closet.service.ClothService;
+import com.gdsc.skhufp.common.response.StatusEnum;
+import com.gdsc.skhufp.common.response.SuccessResponseBody;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URI;
-import java.util.List;
 import java.security.Principal;
+import java.util.List;
+import java.util.Set;
+
 @RestController
+@RequestMapping("/api/clothes")
 @RequiredArgsConstructor
 public class ClothController {
 
     private final ClothService clothService;
     // 생성
-    @PostMapping("/api/clothes")
-    public ResponseEntity<ClothDTO> save(Principal principal,@RequestBody ClothDTO request)
-    {
-        ClothDTO response =clothService.save(principal,request);
-        return ResponseEntity.created(URI.create("/api/clothes/"+response.id()))
-                .body(response);
+    @PostMapping
+    public ResponseEntity<SuccessResponseBody<ClothResponse>> save(Principal principal, @RequestBody ClothRequest request) {
+        ClothResponse response = clothService.save(principal, request);
+
+        return SuccessResponseBody.toResponseEntity(StatusEnum.CREATED_CLOTH, response);
     }
     // 전제 조회
-    @GetMapping("api/clothes")
-    public ResponseEntity<List<ClothDTO>> findAllByUserName(Principal principal) {
-        List<ClothDTO> response = clothService.findAllByUserName(principal);
+    @GetMapping
+    public ResponseEntity<SuccessResponseBody<List<ClothResponse>>> findAll(Principal principal,
+                                                       @RequestParam(required = false) ClothType type,
+                                                       @RequestPart(required = false) Set<Season> seasons) {
+        List<ClothResponse> responses;
 
-        if (response.isEmpty()) {
-            return ResponseEntity
-                    .noContent()
-                    .build();
+        if (type == null && seasons == null) {
+            responses = clothService.findAllByUserName(principal);
+        } else if (type == null && seasons != null) {
+            responses = clothService.findAllByUserNameAndSeasons(principal, seasons);
+        } else if (type != null && seasons == null) {
+            responses = clothService.findAllByUserNameAndType(principal, type);
+        } else {
+            responses = clothService.findAllByUserNameAndTypeAndSeasons(principal, type, seasons);
         }
-        return ResponseEntity.ok(response);
+
+        if (responses.isEmpty()) {
+            return SuccessResponseBody.toEmptyResponseEntity();
+        }
+
+        return SuccessResponseBody.toResponseEntity(StatusEnum.SUCCESS_RETURN_DATA, responses);
     }
     // 특정 조회
     // 특정 Cloth를 조회하기 위한 controller, id값으로 검색
-    @GetMapping("api/clothes/{id}")
-    public ResponseEntity<ClothDTO> findById(@PathVariable("id") Long id) {
-        ClothDTO response = clothService.findById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<SuccessResponseBody<ClothResponse>> findById(@PathVariable("id") Long id, Principal principal) {
+        ClothResponse response = clothService.findById(id, principal);
 
-        return ResponseEntity.ok(response);
+        return SuccessResponseBody.toResponseEntity(StatusEnum.SUCCESS_RETURN_DATA, response);
     }
 
     // 수정
-    @PatchMapping("api/clothes/{id}")
-    public ResponseEntity<ClothDTO> updateById(@PathVariable("id")Long id,@RequestBody ClothDTO request){
+    @PatchMapping("/{id}")
+    public ResponseEntity<SuccessResponseBody<ClothResponse>> updateById(@PathVariable("id") Long id, Principal principal, @RequestBody ClothRequest request){
 
-        ClothDTO response = clothService.updateById(id,request);
+        ClothResponse response = clothService.updateById(id, principal, request);
 
-        return ResponseEntity.ok(response);
+        return SuccessResponseBody.toResponseEntity(StatusEnum.SUCCESS_UPDATE_DATA, response);
     }
     // 삭제
-    @DeleteMapping("api/clothes/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable("id") Long id) {
-        clothService.deleteById(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SuccessResponseBody<Void>> deleteById(@PathVariable("id") Long id, Principal principal) {
+        clothService.deleteById(id, principal);
 
-        return ResponseEntity.ok(null);
+        return SuccessResponseBody.toResponseEntity(StatusEnum.SUCCESS_DELETE_DATA, null);
     }
 
+    @PostMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<SuccessResponseBody<ClothResponse>> uploadImageById(@PathVariable("id") Long id, Principal principal, @RequestPart MultipartFile file) {
+        ClothResponse response = clothService.uploadImageById(id, principal, file);
+
+        return SuccessResponseBody.toResponseEntity(StatusEnum.SUCCESS_UPDATE_DATA, response);
+    }
+
+    @DeleteMapping("/{id}/image")
+    public ResponseEntity<SuccessResponseBody<Void>> deleteImageById(@PathVariable("id") Long id, Principal principal) {
+        clothService.deleteImageById(id, principal);
+
+        return SuccessResponseBody.toResponseEntity(StatusEnum.SUCCESS_DELETE_DATA, null);
+    }
 }
