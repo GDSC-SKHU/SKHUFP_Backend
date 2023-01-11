@@ -12,6 +12,6 @@ import java.util.Set;
 public interface ClothRepository extends JpaRepository<Cloth, Long> {
     List<Cloth> findAllByUser(User user);
     List<Cloth> findAllByUserAndType(User user, ClothType type);
-    List<Cloth> findAllByUserAndSeasons(User user, Set<Season> seasons);
-    List<Cloth> findAllByUserAndTypeAndSeasons(User user, ClothType type, Set<Season> seasons);
+    List<Cloth> findAllByUserAndSeasonsIn(User user, Set<Season> seasons);
+    List<Cloth> findAllByUserAndTypeAndSeasonsIn(User user, ClothType type, Set<Season> seasons);
 }
