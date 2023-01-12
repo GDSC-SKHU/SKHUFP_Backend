@@ -34,7 +34,7 @@ public class ClothController {
     @GetMapping
     public ResponseEntity<SuccessResponseBody<List<ClothResponse>>> findAll(Principal principal,
                                                        @RequestParam(required = false) ClothType type,
-                                                       @RequestPart(required = false) Set<Season> seasons) {
+                                                       @RequestParam(required = false) Set<Season> seasons) {
         List<ClothResponse> responses;
 
         if (type == null && seasons == null) {

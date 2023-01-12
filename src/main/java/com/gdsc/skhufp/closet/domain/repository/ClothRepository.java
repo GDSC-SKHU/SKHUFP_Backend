@@ -14,4 +14,5 @@ public interface ClothRepository extends JpaRepository<Cloth, Long> {
     List<Cloth> findAllByUserAndType(User user, ClothType type);
     List<Cloth> findAllByUserAndSeasonsIn(User user, Set<Season> seasons);
     List<Cloth> findAllByUserAndTypeAndSeasonsIn(User user, ClothType type, Set<Season> seasons);
+    List<Cloth> findAllByUserAndIdIn(User user, List<Long> ids);
 }

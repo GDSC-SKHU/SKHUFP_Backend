@@ -3,6 +3,7 @@ package com.gdsc.skhufp.auth.util;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseCookie;
 
 import java.util.Arrays;
 
@@ -52,14 +53,22 @@ public class HeaderUtil {
     }
 
     public static void setRefreshToken(HttpServletResponse response, String refreshToken) {
-        Cookie cookie = new Cookie(COOKIE_KEY_NAME, refreshToken);
-        // 1시간 뒤 만료
-        cookie.setMaxAge(60 * 60);
-        // 자바스크립트로 쿠키를 조회하는 것을 막는 옵션
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        // 웹브라우저와 웹서버가 HTTPS로 통신하는 경우에만 웹브라우저가 쿠키를 서버로 전송하는 옵션
+//        Cookie cookie = new Cookie(COOKIE_KEY_NAME, refreshToken);
+//        // 1시간 뒤 만료
+//        cookie.setMaxAge(60 * 60);
+//        // 자바스크립트로 쿠키를 조회하는 것을 막는 옵션
+//        cookie.setHttpOnly(true);
+//        cookie.setPath("/");
+//        // 웹브라우저와 웹서버가 HTTPS로 통신하는 경우에만 웹브라우저가 쿠키를 서버로 전송하는 옵션
 //        cookie.setSecure(true);
-        response.addCookie(cookie);
+
+        ResponseCookie responseCookie = ResponseCookie.from(COOKIE_KEY_NAME, refreshToken)
+                .maxAge(60 * 60)
+                .httpOnly(true)
+                .path("/")
+                .sameSite("None")
+                .secure(true)
+                .build();
+        response.setHeader("Set-Cookie", responseCookie.toString());
     }
 }

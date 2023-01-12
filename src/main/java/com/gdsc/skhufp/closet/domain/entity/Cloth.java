@@ -6,10 +6,7 @@ import com.gdsc.skhufp.closet.dto.response.ClothResponse;
 import com.gdsc.skhufp.common.entity.BaseTimeEntity;
 import com.gdsc.skhufp.storage.domain.model.ImageFile;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
 import java.util.HashSet;
@@ -19,7 +16,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "cloth")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class Cloth extends BaseTimeEntity {
