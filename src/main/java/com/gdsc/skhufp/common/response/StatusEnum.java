@@ -17,6 +17,7 @@ public enum StatusEnum {
     SUCCESS_SIGN_UP(CREATED, "회원가입 성공(Access token, Refresh token 발급 성공)"),
     SUCCESS_REFRESH(CREATED, "Access token refresh 성공"),
     CREATED_CLOTH(CREATED, "옷 생성 성공"),
+    CREATED_DAILY_LOOK(CREATED, "Daily Look 생성 성공"),
 
     // 204
     NO_DATA(NO_CONTENT, "데이터 없음"),
@@ -30,6 +31,7 @@ public enum StatusEnum {
     SEASON_PARAM_NOT_MATCH(BAD_REQUEST, "Request Param을 확인 해주세요(사용 가능한 목록 - spring, summer, fall, winter)"),
     CLOTH_TYPE_BODY_NOT_MATCH(BAD_REQUEST, "Request Body에서 type을 확인 해주세요(사용 가능한 목록 - tops, bottoms, outerwear, shoes, bags, etc)"),
     SEASON_BODY_NOT_MATCH(BAD_REQUEST, "Request Body에서 season을 확인 해주세요(사용 가능한 목록 - spring, summer, fall, winter)"),
+    LIMITED_NUMBER_OF_CLOTH_TYPE(BAD_REQUEST, "해당 타입(tops, bottoms, outerwear, shoes, bags)은 개수가 1개 이하여야 합니다."),
 
     // 401
     INVALID_ACCESS_TOKEN(UNAUTHORIZED, "Access token이 잘못되었습니다."),
@@ -47,6 +49,7 @@ public enum StatusEnum {
     REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "Refresh Token DB에 존재하지 않음"),
     IMAGE_FILE_NOT_FOUND(NOT_FOUND, "Image File DB에 존재하지 않음"),
     CLOTH_NOT_FOUND(NOT_FOUND, "옷 DB에 존재하지 않음"),
+    DAILY_LOOK_NONT_FOUND(NOT_FOUND, "Daily Look DB에 존재하지 않음"),
 
     // 500
     COULD_NOT_SAVE_FILE_IN_S3(INTERNAL_SERVER_ERROR, "S3 저장소에 파일을 저장 할 수 없습니다");
